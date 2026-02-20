@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
+import productModel from "../models/productModel.js";
 
 // making a function to register user in our db
 export const register = async (req, res) => {
@@ -233,4 +234,27 @@ export const verifyResetPasswordOtp = async (req, res) => {
 
   user.restOtpExpiredAt = 0;
   user.restOtp = "";
+};
+
+// add Products
+export const addProduct = async (req, res) => {
+  const {
+    title,
+    description,
+    price,
+    discountPrice,
+    images,
+    category,
+    variants,
+    brand,
+    stock,
+    isActive,
+    rating,
+    numReviews,
+  } = req.body;
+
+  const product = await productModel.create(req.body); // this save the data in db
+
+  // const product = new productModel(req.body); // this line does not save data in db
+  // await product.save(); // after we call save the data is saved
 };
