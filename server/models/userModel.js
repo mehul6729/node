@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const addressSchema = new mongoose.Schema({
+export const addressSchema = new mongoose.Schema({
   flatNo: { type: String, required: true },
   street: { type: String, required: true },
   city: { type: String, required: true },
@@ -63,6 +63,21 @@ const userSchema = new mongoose.Schema(
     resetOtpExpireAt: {
       type: Date,
     },
+
+    cart: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          default: 1,
+        },
+      },
+    ],
 
     addresses: [addressSchema],
 

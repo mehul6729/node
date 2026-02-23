@@ -44,6 +44,7 @@ const productSchema = new mongoose.Schema(
 
     brand: {
       type: String,
+      required: true,
     },
 
     stock: {
@@ -76,3 +77,36 @@ const productModel =
   mongoose.models.Product || mongoose.model("Product", productSchema);
 
 export default productModel;
+
+// Payload example for ui
+// {
+//   "title": "Men's Blue Cotton Shirt",
+//   "description": "Premium quality cotton shirt for men. Comfortable and stylish.",
+//   "price": 1499,
+//   "discountPrice": 1199,
+//   "images": [
+//     "https://example.com/images/shirt1.jpg",
+//     "https://example.com/images/shirt2.jpg",
+//     "https://example.com/images/shirt3.jpg"
+//   ],
+//   "category": "Shirts",
+//   "variants": [
+//     {
+//       "size": "M",
+//       "color": "Blue",
+//       "offer_type": "Summer Sale",
+//       "purchase_count": 10
+//     },
+//     {
+//       "size": "L",
+//       "color": "Blue",
+//       "offer_type": "Summer Sale",
+//       "purchase_count": 5
+//     }
+//   ],
+//   "brand": "Zara",
+//   "stock": 50,
+//   "isActive": true,
+//   "rating": 4.5,
+//   "numReviews": 120
+// }

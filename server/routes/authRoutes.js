@@ -8,14 +8,15 @@ import {
 } from "../controllers/authController.js";
 import { login, logout } from "../controllers/authController.js";
 import { userAuth } from "../middleware/userAuth.js";
+import { addProduct } from "../controllers/productController.js";
 
 const authRouter = express.Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
 authRouter.post("/send/otp", userAuth, sendVerifyOtp);
-authRouter.post("/verify/otp", userAuth, verifyEmail);
-authRouter.post("/is-auth", userAuth, isAuthenticate);
-authRouter.post("/send/reset/password/otp", userAuth, resetPasswordOtp);
+authRouter.post("/verify/otp", userAuth, verifyEmail); // not in use
+authRouter.post("/is-auth", userAuth, isAuthenticate); // not in use
+authRouter.post("/send/reset/password/otp", userAuth, resetPasswordOtp); // not in use
 
 export default authRouter;

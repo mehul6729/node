@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
-import productModel from "../models/productModel.js";
 
 // making a function to register user in our db
 export const register = async (req, res) => {
@@ -23,7 +22,12 @@ export const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // name, email and password is getting saved in db
-    const user = new userModel({ name, email, password: hashedPassword });
+    const user = new userModel({
+      name,
+      email,
+      password: hashedPassword,
+      role: "user",
+    });
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -60,19 +64,22 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    res.json({ success: false, message: "Email and password is required" });
+    return res.json({
+      success: false,
+      message: "Email and password is required",
+    });
   }
 
   try {
     const user = await userModel.findOne({ email }).lean();
 
     if (!user) {
-      res.json({ success: false, message: "Invalid email" });
+      return res.json({ success: false, message: "Invalid email" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      res.json({ success: false, message: "Invalid password" });
+      return res.json({ success: false, message: "Invalid password" });
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
@@ -110,7 +117,8 @@ export const logout = async (req, res) => {
 // send  otp to the user's email
 export const sendVerifyOtp = async (req, res) => {
   try {
-    const userId = req.userId;
+    // const userId = req.userId;
+    const userId = req.user.id;
     const user = await userModel.findById(userId);
 
     if (user.isAccountVerified) {
@@ -138,7 +146,8 @@ export const sendVerifyOtp = async (req, res) => {
 
 // Verify OTP function
 export const verifyEmail = async (req, res) => {
-  const userId = req.userId;
+  // const userId = req.userId;
+  const userId = req.user.id;
   const { otp } = req.body;
 
   try {
@@ -182,7 +191,8 @@ export const isAuthenticate = async (req, res) => {
 
 // send reset password OTP
 export const resetPasswordOtp = async (req, res) => {
-  const userId = req.userId;
+  // const userId = req.userId;
+  const userId = req.user.id;
 
   if (!userId) {
     return res.json({ success: false, message: "Missing Token" });
@@ -234,27 +244,4 @@ export const verifyResetPasswordOtp = async (req, res) => {
 
   user.restOtpExpiredAt = 0;
   user.restOtp = "";
-};
-
-// add Products
-export const addProduct = async (req, res) => {
-  const {
-    title,
-    description,
-    price,
-    discountPrice,
-    images,
-    category,
-    variants,
-    brand,
-    stock,
-    isActive,
-    rating,
-    numReviews,
-  } = req.body;
-
-  const product = await productModel.create(req.body); // this save the data in db
-
-  // const product = new productModel(req.body); // this line does not save data in db
-  // await product.save(); // after we call save the data is saved
 };
