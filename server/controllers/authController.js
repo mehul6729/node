@@ -184,7 +184,7 @@ export const isAuthenticate = async (req, res) => {
   try {
     return res.json({ success: true, message: "Authenticated user" });
   } catch (error) {
-    console.log("isAuthenticate funtion");
+    console.log("isAuthenticate function");
     return res.json({ success: false, message: error.message });
   }
 };
