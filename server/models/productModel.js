@@ -39,6 +39,10 @@ const productSchema = new mongoose.Schema(
         color: String,
         offer_type: String,
         purchase_count: Number,
+        stock: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
 

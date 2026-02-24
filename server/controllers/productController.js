@@ -5,7 +5,6 @@ import userModel from "../models/userModel.js";
 export const addProduct = async (req, res) => {
   const { price, discountPrice, images } = req.body;
   const user = await userModel.findById(req.user.id);
-  console.log(user);
   if (user.role !== "admin") {
     return res.status(401).json({
       success: false,

@@ -8,7 +8,6 @@ import {
 } from "../controllers/authController.js";
 import { login, logout } from "../controllers/authController.js";
 import { userAuth } from "../middleware/userAuth.js";
-import { addProduct } from "../controllers/productController.js";
 
 const authRouter = express.Router();
 authRouter.post("/register", register);

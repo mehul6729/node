@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { addressSchema } from "./userModel";
 
 // Each product inside order
 const orderItemSchema = new mongoose.Schema(
@@ -11,6 +10,8 @@ const orderItemSchema = new mongoose.Schema(
     },
     title: String, // snapshot
     price: Number, // snapshot price
+    size: String,
+    color: String,
     quantity: {
       type: Number,
       required: true,
@@ -29,11 +30,6 @@ const orderSchema = new mongoose.Schema(
     },
 
     items: [orderItemSchema],
-
-    shippingAddress: {
-      type: addressSchema,
-      required: true,
-    },
 
     paymentMethod: {
       type: String,
@@ -63,9 +59,15 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
 
-    paidAt: Date,
+    paidAt: {
+      type: Date,
+      default: null,
+    },
 
-    invoiceUrl: String, // optional pdf link
+    invoiceUrl: {
+      type: String,
+      default: null,
+    }, // optional pdf link
   },
   {
     timestamps: true,
