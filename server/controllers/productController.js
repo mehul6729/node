@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import productModel from "../models/productModel.js";
 import userModel from "../models/userModel.js";
 
@@ -120,3 +121,84 @@ export const getProducts = async (req, res) => {
 //     });
 //   }
 // };
+
+export const updateProduct = async (req, res) => {
+  try {
+    const { _id, ...updateData } = req.body;
+    const userId = req.user.id;
+    const idInvalid = !mongoose.Types.ObjectId.isValid(_id);
+    if (idInvalid) {
+      return res.status(200).json({
+        success: false,
+        message: "invalid product id",
+      });
+    }
+    const user = await userModel.findById(userId);
+
+    if (user.role === "admin") {
+      const product = await productModel.findById(_id);
+      if (product) {
+        const updatedProduct = await productModel.findByIdAndUpdate(
+          _id,
+          updateData,
+          {
+            new: true, // return updated document
+            runValidators: true, // run schema validation
+          },
+        );
+        return res.status(200).json({
+          success: true,
+          message: "Product Updated",
+        });
+      } else {
+        return res.status(200).json({
+          success: false,
+          message: "inValid product id",
+        });
+      }
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "Only admin can update the products",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getProductDetails = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const validId = mongoose.Types.ObjectId.isValid(id);
+    if (!validId)
+      return res.status(200).json({
+        success: false,
+        message: "Invaild Product id",
+      });
+
+    const product = await productModel.findById(id);
+    if (product) {
+      return res.status(200).json({
+        success: true,
+        message: "Product Found",
+        data: product,
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

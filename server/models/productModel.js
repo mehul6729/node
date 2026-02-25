@@ -71,6 +71,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    gender: {
+      type: String,
+      enum: ["M", "F", "U", "none"],
+      default: "none",
+    },
   },
   {
     timestamps: true, // auto adds createdAt & updatedAt

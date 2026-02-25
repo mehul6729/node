@@ -75,10 +75,6 @@ export const placeOrder = async (req, res) => {
     const { items, paymentMethod } = req.body;
     const userId = req.user.id;
 
-    const user = await userModel.findById(userId);
-
-    console.log(user);
-
     // Basic validation
     if (!items || items.length === 0) {
       return res.status(400).json({
@@ -122,6 +118,7 @@ export const placeOrder = async (req, res) => {
     for (const item of items) {
       const product = products.find((p) => p._id.toString() === item.product);
 
+      // check the quantity of the perticular size and color if size and color are null then check item.quantity
       if (item.quantity <= 0) {
         throw new Error("Quantity must be greater than 0");
       }

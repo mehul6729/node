@@ -81,3 +81,30 @@ export const addToCart = async (req, res) => {
     });
   }
 };
+
+export const getUserDetails = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const user = await userModel.findById(userId);
+
+    if (user) {
+      return res.status(200).json({
+        success: true,
+        message: "",
+        data: user,
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
