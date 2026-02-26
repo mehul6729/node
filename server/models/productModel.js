@@ -35,14 +35,22 @@ const productSchema = new mongoose.Schema(
 
     variants: [
       {
-        size: String,
         color: String,
-        offer_type: String,
-        purchase_count: Number,
-        stock: {
-          type: Number,
-          default: 0,
-        },
+        image: [
+          {
+            type: String,
+            required: true,
+          },
+        ],
+        sizeOptions: [
+          {
+            size: String,
+            stock: {
+              type: Number,
+              default: 0,
+            },
+          },
+        ],
       },
     ],
 
@@ -67,10 +75,14 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    numReviews: {
-      type: Number,
-      default: 0,
-    },
+    reviews: [
+      {
+        reviewer_name: String,
+        message: String,
+        rating: Number,
+      },
+    ],
+
     gender: {
       type: String,
       enum: ["M", "F", "U", "none"],

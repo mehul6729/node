@@ -5,8 +5,8 @@ import userModel from "../models/userModel.js";
 // add Products
 export const addProduct = async (req, res) => {
   const { price, discountPrice, images } = req.body;
-  const user = await userModel.findById(req.user.id);
-  if (user.role !== "admin") {
+  const role = req.user.role;
+  if (role !== "admin") {
     return res.status(401).json({
       success: false,
       message: "Only Admin can add products",
@@ -47,7 +47,6 @@ export const getProducts = async (req, res) => {
     req.query;
   try {
     const products = await productModel.find().sort({ createdAt: -1 }); // newest first
-
     return res.status(200).json({
       success: true,
       count: products.length,
@@ -125,7 +124,7 @@ export const getProducts = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const { _id, ...updateData } = req.body;
-    const userId = req.user.id;
+    const role = req.user.role;
     const idInvalid = !mongoose.Types.ObjectId.isValid(_id);
     if (idInvalid) {
       return res.status(200).json({
@@ -133,9 +132,8 @@ export const updateProduct = async (req, res) => {
         message: "invalid product id",
       });
     }
-    const user = await userModel.findById(userId);
 
-    if (user.role === "admin") {
+    if (role === "admin") {
       const product = await productModel.findById(_id);
       if (product) {
         const updatedProduct = await productModel.findByIdAndUpdate(

@@ -186,13 +186,10 @@ export const placeOrder = async (req, res) => {
 
 export const getOrders = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const user = await userModel.findById(userId);
+    const role = req.user.role;
     const orders = await orderModel.find().sort({ createdAt: -1 });
 
-    console.log(user.role);
-
-    if (user.role === "admin") {
+    if (role === "admin") {
       return res.status(200).json({
         success: true,
         message: "OKAY",

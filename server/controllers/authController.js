@@ -30,9 +30,13 @@ export const register = async (req, res) => {
     });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role, email: email, name: name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
     // created a cookie
     res.cookie("token", token, {
       httpOnly: true,
@@ -81,9 +85,13 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.json({ success: false, message: "Invalid password" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: user._id, role: user.role, email: user.email, name: user.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
