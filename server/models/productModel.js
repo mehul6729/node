@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema(
     variants: [
       {
         color: String,
-        image: [
+        images: [
           {
             type: String,
             required: true,
@@ -113,21 +113,46 @@ export default productModel;
 //   "category": "Shirts",
 //   "variants": [
 //     {
-//       "size": "M",
-//       "color": "Blue",
-//       "offer_type": "Summer Sale",
-//       "purchase_count": 10
+//       "color":"Red",
+//       "images":["https://example.com/images/shirt3.jpg",
+//         "https://example.com/images/shirt3.jpg"],
+//         "sizeOptions":[
+//           {"size": "S",
+//             "stock": "20"
+//           },
+//           {"size": "M",
+//             "stock": "20"
+//           }
+// ]
 //     },
-//     {
-//       "size": "L",
-//       "color": "Blue",
-//       "offer_type": "Summer Sale",
-//       "purchase_count": 5
-//     }
+//         {
+//       "color":"Blue",
+//       "images":["https://example.com/images/shirt3.jpg",
+//         "https://example.com/images/shirt3.jpg"],
+//         "sizeOptions":[
+//           {"size": "S",
+//             "stock": "20"
+//           },
+//           {"size": "M",
+//             "stock": "20"
+//           }
+// ]
+//     },
+//         {
+//       "color":"Blue",
+//       "images":["https://example.com/images/shirt3.jpg",
+//         "https://example.com/images/shirt3.jpg"],
+//         "sizeOptions":[
+//           {"size": "S",
+//             "stock": "20"
+//           },
+//           {"size": "M",
+//             "stock": "20"
+//           }
+// ]
+//     },
 //   ],
 //   "brand": "Zara",
 //   "stock": 50,
 //   "isActive": true,
-//   "rating": 4.5,
-//   "numReviews": 120
 // }

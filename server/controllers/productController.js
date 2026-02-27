@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import path from "path";
 import productModel from "../models/productModel.js";
-import userModel from "../models/userModel.js";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 // add Products
 export const addProduct = async (req, res) => {
@@ -59,67 +61,6 @@ export const getProducts = async (req, res) => {
     });
   }
 };
-
-// export const getProducts = async (req, res) => {
-//   try {
-//     const {
-//       category,
-//       bestSeller,
-//       minPrice,
-//       maxPrice,
-//       search,
-//       sortBy,
-//     } = req.query;
-
-//     // Build filter object dynamically
-//     let filter = {};
-
-//     if (category) {
-//       filter.category = category;
-//     }
-
-//     if (bestSeller === "true") {
-//       filter.bestSeller = true;
-//     }
-
-//     if (minPrice || maxPrice) {
-//       filter.price = {};
-//       if (minPrice) filter.price.$gte = Number(minPrice);
-//       if (maxPrice) filter.price.$lte = Number(maxPrice);
-//     }
-
-//     if (search) {
-//       filter.title = { $regex: search, $options: "i" }; // case-insensitive search
-//     }
-
-//     // Sorting
-//     let sortOption = { createdAt: -1 }; // default newest
-
-//     if (sortBy === "price_low") {
-//       sortOption = { price: 1 };
-//     }
-
-//     if (sortBy === "price_high") {
-//       sortOption = { price: -1 };
-//     }
-
-//     const products = await productModel
-//       .find(filter)
-//       .sort(sortOption);
-
-//     return res.status(200).json({
-//       success: true,
-//       count: products.length,
-//       products,
-//     });
-
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
 
 export const updateProduct = async (req, res) => {
   try {
@@ -191,6 +132,84 @@ export const getProductDetails = async (req, res) => {
       return res.status(200).json({
         success: false,
         message: "Product not found",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const imgSave = async (req, res) => {
+  const user = req.user;
+
+  try {
+    if (!user || user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only for admin",
+      });
+    }
+
+    if (!req.file || !req.file.filename) {
+      return res.status(400).json({
+        success: false,
+        message: "No image uploaded.",
+      });
+    }
+
+    const savedPath = path
+      .join("productImg", req.file.filename)
+      .replace(/\\/g, "/");
+
+    return res.status(200).json({
+      success: true,
+      message: "Image saved successfully",
+      data: savedPath,
+    });
+  } catch (error) {
+    console.error("imgSave error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteImg = async (req, res) => {
+  const user = req.user;
+  const fileName = req.body.fileName;
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const filePath = path.join(__dirname, `../productImg/${fileName}`);
+
+  try {
+    if (!fileName) {
+      return res.status(200).json({
+        success: false,
+        message: "Add file name",
+      });
+    }
+    if (user.role === "admin") {
+      if (!fs.existsSync(filePath)) {
+        return res.status(200).json({
+          success: false,
+          message: "File don't exists",
+        });
+      }
+      const removeImg = fs.unlinkSync(filePath);
+
+      return res.status(200).json({
+        success: true,
+        message: "Img Deleted successfully",
+      });
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Only for admin",
       });
     }
   } catch (error) {
