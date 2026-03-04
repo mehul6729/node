@@ -139,7 +139,7 @@ export const placeOrder = async (req, res) => {
         title: product.title,
         price: product.price,
         quantity: item.quantity,
-        image: product.image,
+        image: product.images?.[0] || "",
       });
     }
 
@@ -187,7 +187,10 @@ export const placeOrder = async (req, res) => {
 export const getOrders = async (req, res) => {
   try {
     const role = req.user.role;
-    const orders = await orderModel.find().sort({ createdAt: -1 });
+    const orders = await orderModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate("user", "name email phone");
 
     if (role === "admin") {
       return res.status(200).json({
@@ -202,6 +205,28 @@ export const getOrders = async (req, res) => {
         message: "Only for admin",
       });
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getMyOrders = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const orders = await orderModel
+      .find({ user: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.status(200).json({
+      success: true,
+      message: "OK",
+      count: orders?.length || 0,
+      orders: orders || [],
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
